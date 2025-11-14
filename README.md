@@ -49,10 +49,3 @@ The system demonstrates:
 | **Session Management** | Unique session token generated after login using `secrets.token_hex` |
 
 ---
-
-##  How to Run the Program
-
-1. Ensure Python 3 is installed.  
-2. Install the `bcrypt` library:
-   ```bash
-   pip install bcrypt
