@@ -1,11 +1,10 @@
 # main.py
-
-from app.data.db import get_connection
-from app.data.schema import create_tables
-from app.data.users import migrate_users
-from app.data.datasets import load_datasets
-from app.data.incidents import load_cyber_incidents, create_incident, get_incidents
-from app.data.tickets import load_tickets_csv
+from app.db import get_connection
+from app.schema import create_tables
+from app.users import migrate_users
+from app.datasets import load_datasets
+from app.incidents import load_cyber_incidents, create_incident, get_incidents
+from app.tickets import load_tickets_csv
 
 
 def setup_database():
@@ -27,5 +26,15 @@ def demo():
 
 
 if __name__ == "__main__":
+    # Step 1 – create tables + load all CSV data
     setup_database()
+
+    # Step 2 – (optional) a quick demo insert + print
     demo()
+
+    # Or, if you prefer a simple print instead of demo(), use this:
+    # conn = get_connection()
+    # incidents_df = get_incidents(conn)
+    # print(incidents_df.head())
+    # conn.close()
+
