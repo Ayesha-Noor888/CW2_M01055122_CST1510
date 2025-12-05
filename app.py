@@ -33,10 +33,10 @@ if "db_initialised" not in st.session_state:
     init_database()
     st.session_state["db_initialised"] = True
 
-st.title("📊 Intelligence Platform – Week 9 Dashboard")
+st.title("📊 Intelligence Platform – Welcome")
 st.write(
     """
-This is the **home page** of the Week 9 Streamlit application.
+This is the **home page** of the Streamlit application.
 
 Use the navigation menu on the **left sidebar** to:
 - Go to the **Login / Register** page
@@ -52,3 +52,4 @@ st.page_link("pages/Login.py", label="🔑 Login / Register")
 st.page_link("pages/Dashboard_Cyber.py", label="🛡️ Cyber Incidents Dashboard")
 st.page_link("pages/Dashboard_Datasets.py", label="📂 Datasets Dashboard")
 st.page_link("pages/Dashboard_Tickets.py", label="🎫 IT Tickets Dashboard")
+st.page_link("pages/AI_Assistant.py", label="🤖 AI Assistant (Gemini API)")

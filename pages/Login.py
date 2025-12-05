@@ -1,6 +1,7 @@
 # pages/Login.py
 import streamlit as st
-import bcrypt
+import bcrypt as bcrypt
+
 
 from app.db import get_connection
 
