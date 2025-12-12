@@ -1,14 +1,27 @@
 # pages/Login.py
+
 import streamlit as st
-import bcrypt as bcrypt
 
+from services.database_manager import DatabaseManager
+from services.auth_manager import AuthManager
 
-from app.db import get_connection
-
+# -------------------------------------------------------------------
+# Page config
+# -------------------------------------------------------------------
 st.set_page_config(page_title="Login / Register", page_icon="🔑", layout="centered")
 
+# -------------------------------------------------------------------
+# Create shared DB + Auth objects for this page (OOP style)
+# DatabaseManager() will default to DATA/intelligence_platform.db
+# as defined in services/database_manager.py
+# -------------------------------------------------------------------
+db_manager = DatabaseManager()
+auth_manager = AuthManager(db_manager)
 
-# ---------- SMALL HELPER: LOGIN GUARD (USED BY DASHBOARDS TOO) ----------
+
+# -------------------------------------------------------------------
+# SMALL HELPER: LOGIN GUARD (USED BY DASHBOARDS TOO)
+# -------------------------------------------------------------------
 def require_login(target_login_page: str = "pages/Login.py"):
     """
     Redirect user to login page if not authenticated.
@@ -28,57 +41,9 @@ def require_login(target_login_page: str = "pages/Login.py"):
         st.stop()
 
 
-# ---------- DB HELPERS FOR USERS ----------
-
-def get_user_by_username(username: str):
-    conn = get_connection()
-    cur = conn.cursor()
-    cur.execute(
-        "SELECT id, username, password_hash, role FROM users WHERE username = ?",
-        (username,),
-    )
-    row = cur.fetchone()
-    conn.close()
-    return row  # None or (id, username, password_hash, role)
-
-
-def register_user(username: str, password: str, role: str = "user") -> bool:
-    # Check if user exists
-    existing = get_user_by_username(username)
-    if existing is not None:
-        return False
-
-    # Hash password
-    pw_bytes = password.encode("utf-8")
-    hashed = bcrypt.hashpw(pw_bytes, bcrypt.gensalt())
-
-    conn = get_connection()
-    cur = conn.cursor()
-    cur.execute(
-        "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
-        (username, hashed.decode("utf-8"), role),
-    )
-    conn.commit()
-    conn.close()
-    return True
-
-
-def check_credentials(username: str, password: str):
-    row = get_user_by_username(username)
-    if row is None:
-        return False, None
-
-    _, db_username, db_hash, role = row
-    pw_bytes = password.encode("utf-8")
-    hash_bytes = db_hash.encode("utf-8")
-
-    if bcrypt.checkpw(pw_bytes, hash_bytes):
-        return True, role
-    return False, None
-
-
-# ---------- INITIALISE SESSION STATE ----------
-
+# -------------------------------------------------------------------
+# INITIALISE SESSION STATE
+# -------------------------------------------------------------------
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "username" not in st.session_state:
@@ -90,7 +55,10 @@ st.title("🔐 Intelligence Platform – Login / Register")
 
 # If already logged in, show quick links
 if st.session_state.logged_in:
-    st.success(f"Already logged in as **{st.session_state.username}** (role: {st.session_state.role}).")
+    st.success(
+        f"Already logged in as **{st.session_state.username}** "
+        f"(role: {st.session_state.role})."
+    )
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -102,10 +70,12 @@ if st.session_state.logged_in:
 
     st.divider()
 
-# ---------- TABS: LOGIN / REGISTER ----------
+# -------------------------------------------------------------------
+# TABS: LOGIN / REGISTER
+# -------------------------------------------------------------------
 tab_login, tab_register = st.tabs(["Login", "Register"])
 
-# ----- LOGIN TAB -----
+# ----- LOGIN TAB ----------------------------------------------------
 with tab_login:
     st.subheader("Login")
 
@@ -113,11 +83,14 @@ with tab_login:
     login_password = st.text_input("Password", type="password", key="login_password")
 
     if st.button("Log in", type="primary"):
-        ok, role = check_credentials(login_username, login_password)
+        # Use AuthManager.check_credentials (OOP)
+        ok, role = auth_manager.check_credentials(login_username, login_password)
+
         if ok:
             st.session_state.logged_in = True
             st.session_state.username = login_username
             st.session_state.role = role or "user"
+
             st.success(f"Welcome back, {login_username}! 🎉")
 
             col1, col2, col3 = st.columns(3)
@@ -130,7 +103,7 @@ with tab_login:
         else:
             st.error("Invalid username or password.")
 
-# ----- REGISTER TAB -----
+# ----- REGISTER TAB -------------------------------------------------
 with tab_register:
     st.subheader("Register")
 
@@ -144,14 +117,17 @@ with tab_register:
         elif new_password != confirm_password:
             st.error("Passwords do not match.")
         else:
-            created = register_user(new_username, new_password)
+            # Use AuthManager.register_user instead of direct SQL
+            created = auth_manager.register_user(new_username, new_password)
             if not created:
                 st.error("Username already exists. Please choose another one.")
             else:
                 st.success("Account created successfully! You can now log in from the Login tab.")
                 st.info("Tip: go to the Login tab and sign in with your new account.")
 
-
+# -------------------------------------------------------------------
+# LOG OUT
+# -------------------------------------------------------------------
 st.divider()
 if st.session_state.logged_in and st.button("Log out"):
     st.session_state.logged_in = False

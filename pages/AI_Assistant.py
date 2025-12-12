@@ -24,7 +24,7 @@ model = genai.GenerativeModel(MODEL_NAME)
 # 2. Page header
 # --------------------------------------------------
 st.title("🤖 AI Assistant (Gemini API)")
-st.caption("Integrated via Google AI Studio – CST1510 Week 10")
+st.caption("Integrated via Google AI Studio – CST1510")
 
 # --------------------------------------------------
 # 3. Sidebar controls
@@ -133,7 +133,7 @@ if prompt:
             reply = response.text if hasattr(response, "text") else str(response)
         except Exception as e:
             reply = (
-                "❌ Gemini API error:\n\n"
+                " Gemini API error:\n\n"
                 f"`{e}`\n\n"
                 "Your integration is working, but there is an issue with the API call.\n"
                 "Check your GEMINI_API_KEY, model name, or network connection."

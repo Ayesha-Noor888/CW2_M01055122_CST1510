@@ -2,6 +2,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import sqlite3  # <-- needed for catching UNIQUE constraint errors
 
 from app.db import get_connection
 from app.tickets import (
@@ -30,11 +31,30 @@ require_login()
 st.title("🎫 IT Tickets Dashboard")
 st.caption(f"Logged in as **{st.session_state.username}**")
 
+st.caption(
+    """
+This dashboard tracks IT support tickets raised by users.
+It helps monitor ticket status, priority, and workload to ensure
+issues are resolved efficiently and on time.
+"""
+)
+
+st.info("Use the controls below to create, update, and monitor IT support tickets.")
+
+
 conn = get_connection()
 tickets_df = get_tickets(conn)
 if tickets_df is None or tickets_df.empty:
     tickets_df = pd.DataFrame(
-        columns=["id", "ticket_id", "priority", "status", "category", "subject", "assigned_to"]
+        columns=[
+            "id",
+            "ticket_id",
+            "priority",
+            "status",
+            "category",
+            "subject",
+            "assigned_to",
+        ]
     )
 
 # ---- KPIs ----
@@ -70,34 +90,45 @@ with left:
         if not ticket_id or not subject:
             st.warning("Ticket ID and Subject are required.")
         else:
-            new_id = create_ticket(
-                conn,
-                ticket_id,
-                priority,
-                status,
-                category,
-                subject,
-                description,
-                created_date,
-                resolved_date or None,
-                assigned_to,
-            )
-            st.success(f"Ticket created with internal ID {new_id}")
-            tickets_df = get_tickets(conn)
+            try:
+                new_id = create_ticket(
+                    conn,
+                    ticket_id,
+                    priority,
+                    status,
+                    category,
+                    subject,
+                    description,
+                    created_date,
+                    resolved_date or None,
+                    assigned_to,
+                )
+            except sqlite3.IntegrityError:
+                st.error(
+                    "❌ This Ticket ID already exists in the system.\n\n"
+                    "Please use a different, unique Ticket ID."
+                )
+            else:
+                st.success(f"✅ Ticket created with internal ID {new_id}")
+                tickets_df = get_tickets(conn)
 
     st.divider()
     st.subheader("Update / Delete Ticket")
 
     if not tickets_df.empty:
         selected_id = st.selectbox("Select Ticket (row ID)", tickets_df["id"].tolist())
-        new_status = st.selectbox("New status", ["Open", "In Progress", "Closed"], key="ticket_new_status")
+        new_status = st.selectbox(
+            "New status",
+            ["Open", "In Progress", "Closed"],
+            key="ticket_new_status",
+        )
 
         u, d = st.columns(2)
         with u:
             if st.button("Update Ticket Status"):
                 rows = update_ticket_status(conn, selected_id, new_status)
                 if rows:
-                    st.success("Ticket status updated.")
+                    st.success("✅ Ticket status updated.")
                     tickets_df = get_tickets(conn)
                 else:
                     st.error("Update failed.")
@@ -105,7 +136,7 @@ with left:
             if st.button("Delete Ticket"):
                 rows = delete_ticket(conn, selected_id)
                 if rows:
-                    st.success("Ticket deleted.")
+                    st.success("🗑️ Ticket deleted.")
                     tickets_df = get_tickets(conn)
                 else:
                     st.error("Delete failed.")

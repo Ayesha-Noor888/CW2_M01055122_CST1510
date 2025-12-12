@@ -33,14 +33,28 @@ if "db_initialised" not in st.session_state:
     init_database()
     st.session_state["db_initialised"] = True
 
-st.title("📊 Intelligence Platform – Welcome")
-st.write(
-    """
-This is the **home page** of the Streamlit application.
+# ---------- HOME PAGE UI ----------
 
-Use the navigation menu on the **left sidebar** to:
-- Go to the **Login / Register** page
-- Open each **domain dashboard** (Cyber Incidents, Datasets, IT Tickets)
+st.title("📊 Intelligence Platform – Welcome")
+
+# Professional banner image (royalty-free Unsplash URL)
+st.image(
+    "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
+    use_container_width=True,
+    caption="Unified view across Cyber Incidents, Datasets, and IT Tickets.",
+)
+
+st.markdown(
+    """
+This is the **home page** of the Multi-Domain Intelligence Platform built with Streamlit.
+
+The platform brings together three domains:
+
+- 🛡️ **Cyber Incidents** – track and analyse security events  
+- 📂 **Datasets** – manage metadata for analytical datasets  
+- 🎫 **IT Tickets** – monitor IT support workload and status  
+
+Use the navigation menu on the **left sidebar** to move around the app.
 """
 )
 

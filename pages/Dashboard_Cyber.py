@@ -30,6 +30,17 @@ require_login()
 st.title("🛡 Cyber Incidents Dashboard")
 st.caption(f"Logged in as **{st.session_state.username}**")
 
+st.caption(
+    """
+This dashboard provides an overview of cybersecurity incidents recorded in the system.
+It helps identify incident severity, trends, and potential threats so that security teams
+can respond quickly and effectively.
+"""
+)
+
+st.info("Use the controls below to explore incident severity, status, and trends.")
+
+
 conn = get_connection()
 incidents_df = get_incidents(conn)
 if incidents_df is None or incidents_df.empty:
