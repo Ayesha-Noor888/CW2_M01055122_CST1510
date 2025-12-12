@@ -1,51 +1,100 @@
-# Week 7: Secure Authentication System
+📊 Multi-Domain Intelligence Platform
 
-**Student Name:** Ayesha Noor 
-**Student ID:** M01055122 
-**Course:** CST1510 - CW2 - Multi-Domain Intelligence Platform  
+CST1510 – Software Development | Streamlit Project
 
----
+📌 Project Overview
 
-##  Project Description
+The Multi-Domain Intelligence Platform is a Streamlit-based web application designed to analyse and manage information across three real-world IT domains:
 
-This project implements a **secure command-line authentication system** in Python.  
-Users can **register accounts** and **log in securely**, with passwords hashed using `bcrypt`.  
+🛡️ Cybersecurity Incidents
 
-The system demonstrates:
-- Secure password storage and verification  
-- User role management (e.g., user, admin, analyst)  
-- Account security features like lockout after multiple failed attempts  
-- Session token generation for logged-in users  
-- File-based data persistence using `users.txt`, `sessions.json`, and `failed_attempts.json`
+📂 Datasets & Metadata
 
----
+🎫 IT Support Tickets
 
-##  Features
+The platform provides interactive dashboards, database-driven operations, and an AI assistant to support analysis and decision-making. The project was developed incrementally over multiple weeks, with a strong focus on Object-Oriented Programming (OOP) and clean software architecture.
 
--  **Secure Password Hashing** using `bcrypt` with automatic salting  
--  **User Registration** with role assignment  
--  **Password Strength Indicator** (Weak, Medium, Strong)  
--  **User Login** with hashed password verification  
--  **Account Lockout** after 3 failed login attempts (5 minutes)  
--  **Session Management** with unique session tokens  
--  **File-based Storage**:
-  - `users.txt` → stores username, hashed password, and role  
-  - `failed_attempts.json` → tracks failed login attempts for lockout  
-  - `sessions.json` → stores active session tokens with timestamps  
-- **Simple and clean CLI interface**  
+🏗️ System Architecture & Code Organization
 
----
+The project follows a layered OOP architecture, separating responsibilities clearly:
 
-##  Technical Implementation
+multi_domain_platform/
+│── models/        # Core entity classes (User, Dataset, Ticket, Incident)
+│── services/      # Business logic & database services
+│── database/      # SQLite database files
+│── pages/         # Streamlit UI pages (dashboards)
+│── app.py         # Main entry point (home page)
+│── README.md
 
-| Component | Description |
-|------------|-------------|
-| **Language** | Python 3 |
-| **Hashing Algorithm** | bcrypt with automatic salting |
-| **Data Storage** | `users.txt`, `failed_attempts.json`, `sessions.json` |
-| **Security** | One-way hashing, password never stored in plaintext |
-| **Password Validation** | Strength evaluated based on length, uppercase/lowercase letters, digits, and special characters |
-| **Account Lockout** | After 3 failed attempts, account locked for 5 minutes |
-| **Session Management** | Unique session token generated after login using `secrets.token_hex` |
+Key Classes
 
----
+User – authentication and role handling
+
+SecurityIncident – cyber incident representation
+
+Dataset – dataset metadata and calculations
+
+ITTicket – IT support ticket lifecycle
+
+DatabaseManager – handles all database access
+
+AuthManager – login & registration logic
+
+This refactoring (Week 11) removed raw SQL from Streamlit pages and improved maintainability, readability, and scalability.
+
+📊 Key Features
+🛡️ Cyber Incidents Dashboard
+
+View incidents by severity and status
+
+Visualise trends using bar charts
+
+Helps identify high-risk security threats
+
+📂 Datasets Dashboard
+
+Manage dataset metadata (CRUD)
+
+Analyse record counts and file sizes
+
+Interactive charts using Plotly
+
+🎫 IT Tickets Dashboard
+
+Create and manage IT support tickets
+
+Track ticket priority and resolution status
+
+Supports operational efficiency
+
+🤖 AI Assistant (Gemini / ChatGPT)
+
+Integrated AI assistant for explanations and guidance
+
+Supports users when analysing incidents or tickets
+
+Gracefully handles API quota limitations
+
+🎨 User Interface
+
+Built using Streamlit
+
+Clear navigation via sidebar
+
+Informational banners for usability
+
+Enhanced home page with professional welcome layout
+
+🛠️ Technologies Used
+
+Python 3
+
+Streamlit
+
+SQLite
+
+Plotly
+
+Object-Oriented Programming (OOP)
+
+Git & GitHub
