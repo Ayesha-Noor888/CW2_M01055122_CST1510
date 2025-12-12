@@ -2,7 +2,7 @@
 
 CST1510 – Software Development | Streamlit Project
 
-📌 Project Overview
+ Project Overview
 
 The Multi-Domain Intelligence Platform is a Streamlit-based web application designed to analyse and manage information across three real-world IT domains:
 
@@ -14,7 +14,7 @@ The Multi-Domain Intelligence Platform is a Streamlit-based web application desi
 
 The platform provides interactive dashboards, database-driven operations, and an AI assistant to support analysis and decision-making. The project was developed incrementally over multiple weeks, with a strong focus on Object-Oriented Programming (OOP) and clean software architecture.
 
-🏗️ System Architecture & Code Organization
+ System Architecture & Code Organization
 
 The project follows a layered OOP architecture, separating responsibilities clearly:
 
@@ -75,7 +75,7 @@ Supports users when analysing incidents or tickets
 
 Gracefully handles API quota limitations
 
-🎨 User Interface
+ User Interface
 
 Built using Streamlit
 
@@ -85,7 +85,7 @@ Informational banners for usability
 
 Enhanced home page with professional welcome layout
 
-🛠️ Technologies Used
+Technologies Used
 
 Python 3
 
